@@ -11,9 +11,10 @@ namespace Newtonian_Particle_Simulator
 {
     class MainWindow : GameWindow
     {
+        public const int WORK_GROUP_SIZE_X = 128;
         public MainWindow() : base(832, 832, new GraphicsMode(0, 0, 0, 0), "Newtonian-Particle-Simulator") { }
 
-        public readonly Camera PlayerCamera = new Camera(Vector3.Zero, new Vector3(0, 1, 0));
+        public readonly Camera PlayerCamera = new Camera(new Vector3(0, 0, 15), new Vector3(0, 1, 0));
         public Matrix4 Projection;
 
         int frames = 0, FPS;
@@ -112,14 +113,14 @@ namespace Newtonian_Particle_Simulator
 
             computeTimer = new Query(100); rasterizerTimer = new Query(100);
             VSync = VSyncMode.Off;
+            rasterizerProgram = new ShaderProgram(new Shader(ShaderType.VertexShader, "res/shaders/rasterizer/vertex.glsl".GetPathContent()), new Shader(ShaderType.FragmentShader, "res/shaders/rasterizer/fragment.glsl".GetPathContent()));
 
-            GL.GetInteger((GetIndexedPName)All.MaxComputeWorkGroupCount, 0, out int maxParticles);
-            maxParticles *= 64;
-            int numParticles;
+            GL.GetInteger((GetIndexedPName)All.MaxComputeWorkGroupCount, 0, out int maxWorkGroupountX);
+            ulong maxParticles = (ulong)maxWorkGroupountX * WORK_GROUP_SIZE_X;
+            ulong numParticles;
             do
                 Console.Write($"Number of particles (max: {maxParticles}): ");
-            while ((!int.TryParse(Console.ReadLine(), out numParticles)) || numParticles > maxParticles || numParticles < 0);
-            
+            while ((!ulong.TryParse(Console.ReadLine(), out numParticles)) || numParticles > maxParticles || numParticles < 0);
 
             Random rng = new Random();
             Particle[] particles = new Particle[numParticles];
@@ -129,7 +130,6 @@ namespace Newtonian_Particle_Simulator
                 //particles[i].Position = Helper.RandomUnitVector(rng) * 50.0f;
             }
             particleSimulator = new ParticleSimulator(particles);
-            rasterizerProgram = new ShaderProgram(new Shader(ShaderType.VertexShader, "res/shaders/rasterizer/vertex.glsl".GetPathContent()), new Shader(ShaderType.FragmentShader, "res/shaders/rasterizer/fragment.glsl".GetPathContent()));
 
             base.OnLoad(e);
         }

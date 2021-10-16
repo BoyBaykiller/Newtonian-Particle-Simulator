@@ -26,7 +26,7 @@ namespace Newtonian_Particle_Simulator.Render
         {
             ShaderProgram.Use();
             ShaderProgram.Upload(0, dT);
-            GL.DispatchCompute((NumParticles + 64 - 1) / 64, 1, 1);
+            GL.DispatchCompute((NumParticles + MainWindow.WORK_GROUP_SIZE_X - 1) / MainWindow.WORK_GROUP_SIZE_X, 1, 1);
             GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
         }
 
@@ -38,7 +38,7 @@ namespace Newtonian_Particle_Simulator.Render
                 Vector2 normalizedDeviceCoords = Vector2.Divide(new Vector2(windowSpaceCoords.X, windowSpaceCoords.Y), new Vector2(mainWindow.Width, mainWindow.Height)) * 2.0f - new Vector2(1.0f); // [-1.0, 1.0][-1.0, 1.0]
                 Vector3 dir = GetWorldSpaceRay(mainWindow.Projection.Inverted(), mainWindow.PlayerCamera.View.Inverted(), normalizedDeviceCoords);
 
-                Vector3 pointOfMass = mainWindow.PlayerCamera.Position + dir * 30.0f;
+                Vector3 pointOfMass = mainWindow.PlayerCamera.Position + dir * 40.0f;
                 ShaderProgram.Upload(1, pointOfMass);
                 ShaderProgram.Upload(2, 1.0f);
             }

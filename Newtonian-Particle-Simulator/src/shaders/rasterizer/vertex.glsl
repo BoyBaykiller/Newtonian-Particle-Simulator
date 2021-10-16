@@ -19,7 +19,7 @@ void main()
     Particle particle = ssbo.particles[gl_VertexID];
 
     float red = mix(0.0, 1.0, 0.0169 * dot(particle.Velocity, particle.Velocity));
-    float green = clamp(0.1 * max(particle.Velocity.x, max(particle.Velocity.y, particle.Velocity.z)), 0.2, 0.7);
+    float green = clamp(0.1 * max(particle.Velocity.x, max(particle.Velocity.y, particle.Velocity.z)), 0.3, 0.7);
     float blue = 0.7 - red;
 
 
