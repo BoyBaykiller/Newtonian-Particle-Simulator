@@ -4,12 +4,18 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Newtonian_Particle_Simulator</RootNamespace>
-    <Platforms>AnyCPU;x64</Platforms>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="res\**" />
+    <EmbeddedResource Remove="res\**" />
+    <None Remove="res\**" />
+  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="ImGui.NET" Version="1.78.0" />
@@ -18,12 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="res\" />
     <Folder Include="src\shaders\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /e /y /i &quot;$(ProjectDir)src\shaders\&quot; &quot;$(ProjectDir)$(OutDir)\res\shaders&quot;&#xD;&#xA;xcopy /e /y /i &quot;$(ProjectDir)res\&quot; &quot;$(ProjectDir)$(OutDir)\res&quot;" />
+    <Exec Command="xcopy /e /y /i &quot;$(ProjectDir)src\shaders\&quot; &quot;$(ProjectDir)$(OutDir)\res\shaders&quot;" />
   </Target>
 
 </Project>
