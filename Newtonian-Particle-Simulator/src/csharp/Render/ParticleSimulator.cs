@@ -38,7 +38,7 @@ namespace Newtonian_Particle_Simulator.Render
                 Vector2 normalizedDeviceCoords = Vector2.Divide(new Vector2(windowSpaceCoords.X, windowSpaceCoords.Y), new Vector2(mainWindow.Width, mainWindow.Height)) * 2.0f - new Vector2(1.0f); // [-1.0, 1.0][-1.0, 1.0]
                 Vector3 dir = GetWorldSpaceRay(mainWindow.Projection.Inverted(), mainWindow.PlayerCamera.View.Inverted(), normalizedDeviceCoords);
 
-                Vector3 pointOfMass = mainWindow.PlayerCamera.Position + dir * 40.0f;
+                Vector3 pointOfMass = mainWindow.PlayerCamera.Position + dir * 25.0f;
                 ShaderProgram.Upload(1, pointOfMass);
                 ShaderProgram.Upload(2, 1.0f);
             }
