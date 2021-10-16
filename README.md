@@ -1,6 +1,7 @@
 # C# OpenGL Newtonian-Particle-Simulator
 
-![Example](https://github.com/JulianStambuk/OpenTK-PathTracer/blob/master/Video.gif)
+![Example](https://github.com/JulianStambuk/Newtonian-Particle-Simulator/blob/master/Video.gif?raw=true)
+
 
 ### **KeyBoard:**
 * W, A, S, D => Movment
