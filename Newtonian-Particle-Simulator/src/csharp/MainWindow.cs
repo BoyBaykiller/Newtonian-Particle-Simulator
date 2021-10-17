@@ -19,6 +19,7 @@ namespace Newtonian_Particle_Simulator
         int frames = 0, FPS;
         protected override void OnRenderFrame(FrameEventArgs e)
         {
+            GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
             particleSimulator.Run((float)e.Time);
 
             SwapBuffers();
@@ -26,7 +27,6 @@ namespace Newtonian_Particle_Simulator
             base.OnRenderFrame(e);
         }
 
-        bool isStopped = false;
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             if (fpsTimer.ElapsedMilliseconds >= 1000)
@@ -41,9 +41,6 @@ namespace Newtonian_Particle_Simulator
             {
                 KeyboardManager.Update();
                 MouseManager.Update();
-
-                if (KeyboardManager.IsKeyTouched(Key.T))
-                    isStopped = !isStopped;
 
                 if (KeyboardManager.IsKeyTouched(Key.V))
                     VSync = VSync == VSyncMode.Off ? VSyncMode.On : VSyncMode.Off;

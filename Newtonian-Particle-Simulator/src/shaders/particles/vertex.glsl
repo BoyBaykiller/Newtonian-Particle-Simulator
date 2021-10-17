@@ -15,6 +15,7 @@ layout(std430, binding = 0) coherent buffer ParticlesSSBO
 layout(location = 0) uniform float dT;
 layout(location = 1) uniform vec3 pointOfMass;
 layout(location = 2) uniform float isActive;
+layout(location = 3) uniform float isRunning;
 layout(location = 4) uniform mat4 projViewMatrix;
 
 out vec4 Color;
@@ -26,9 +27,9 @@ void main()
     float len = length(toMass);
     float dist = max(len, EPSILON);
     
-    particle.Velocity += isActive / dist * (toMass / len);
-    particle.Velocity *= 0.998; 
-    particle.Position = particle.Position + dT * particle.Velocity;
+    particle.Velocity *= mix(1.0, 0.998, isRunning); 
+    particle.Velocity += isRunning * isActive / dist * (toMass / len);
+    particle.Position = particle.Position + dT * particle.Velocity * isRunning;
     ssbo.particles[gl_VertexID] = particle;
 
 

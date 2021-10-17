@@ -18,9 +18,25 @@ namespace Newtonian_Particle_Simulator.Render
 
             ParticleBuffer = new BufferObject(BufferRangeTarget.ShaderStorageBuffer, 0);
             ParticleBuffer.ImmutableAllocate(System.Runtime.CompilerServices.Unsafe.SizeOf<Particle>() * NumParticles, particles, BufferStorageFlags.ClientStorageBit);
+
+            IsRunning = true;
         }
 
-        
+
+        private bool _isRunning;
+        public bool IsRunning
+        {
+            get
+            {
+                return _isRunning;
+            }
+
+            set
+            {
+                _isRunning = value;
+                ShaderProgram.Upload(3, _isRunning ? 1.0f : 0.0f);
+            }
+        }
         public void Run(float dT)
         {
             Framebuffer.Clear(0, ClearBufferMask.ColorBufferBit);
@@ -47,6 +63,9 @@ namespace Newtonian_Particle_Simulator.Render
                 else
                     ShaderProgram.Upload(2, 0.0f);
             }
+
+            if (KeyboardManager.IsKeyTouched(Key.T))
+                IsRunning = !IsRunning;
 
             ShaderProgram.Upload(4, view * projection);
         }
