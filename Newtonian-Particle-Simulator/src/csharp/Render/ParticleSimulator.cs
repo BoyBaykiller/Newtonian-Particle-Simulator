@@ -14,36 +14,41 @@ namespace Newtonian_Particle_Simulator.Render
         {
             NumParticles = particles.Length;
 
-            ShaderProgram = new ShaderProgram(new Shader(ShaderType.ComputeShader, "res/shaders/particles/update.glsl".GetPathContent()));
+            ShaderProgram = new ShaderProgram(new Shader(ShaderType.VertexShader, "res/shaders/particles/vertex.glsl".GetPathContent()), new Shader(ShaderType.FragmentShader, "res/shaders/particles/fragment.glsl".GetPathContent()));
+
             ParticleBuffer = new BufferObject(BufferRangeTarget.ShaderStorageBuffer, 0);
             ParticleBuffer.ImmutableAllocate(System.Runtime.CompilerServices.Unsafe.SizeOf<Particle>() * NumParticles, particles, BufferStorageFlags.ClientStorageBit);
-
-            ShaderProgram.Upload("numParticles", NumParticles);
         }
 
         
         public void Run(float dT)
         {
+            Framebuffer.Clear(0, ClearBufferMask.ColorBufferBit);
             ShaderProgram.Use();
             ShaderProgram.Upload(0, dT);
-            GL.DispatchCompute((NumParticles + MainWindow.WORK_GROUP_SIZE_X - 1) / MainWindow.WORK_GROUP_SIZE_X, 1, 1);
-            GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
+
+            GL.DrawArrays(PrimitiveType.Points, 0, NumParticles);
         }
 
-        public void ProcessInputs(MainWindow mainWindow)
+        public void ProcessInputs(MainWindow mainWindow, Vector3 camPos, in Matrix4 view, in Matrix4 projection)
         {
-            if (MouseManager.LeftButton == ButtonState.Pressed)
+            if (mainWindow.CursorVisible)
             {
-                System.Drawing.Point windowSpaceCoords = mainWindow.PointToClient(new System.Drawing.Point(MouseManager.WindowPositionX, MouseManager.WindowPositionY)); windowSpaceCoords.Y = mainWindow.Height - windowSpaceCoords.Y; // [0, Width][0, Height]
-                Vector2 normalizedDeviceCoords = Vector2.Divide(new Vector2(windowSpaceCoords.X, windowSpaceCoords.Y), new Vector2(mainWindow.Width, mainWindow.Height)) * 2.0f - new Vector2(1.0f); // [-1.0, 1.0][-1.0, 1.0]
-                Vector3 dir = GetWorldSpaceRay(mainWindow.Projection.Inverted(), mainWindow.PlayerCamera.View.Inverted(), normalizedDeviceCoords);
+                if (MouseManager.LeftButton == ButtonState.Pressed)
+                {
+                    System.Drawing.Point windowSpaceCoords = mainWindow.PointToClient(new System.Drawing.Point(MouseManager.WindowPositionX, MouseManager.WindowPositionY)); windowSpaceCoords.Y = mainWindow.Height - windowSpaceCoords.Y; // [0, Width][0, Height]
+                    Vector2 normalizedDeviceCoords = Vector2.Divide(new Vector2(windowSpaceCoords.X, windowSpaceCoords.Y), new Vector2(mainWindow.Width, mainWindow.Height)) * 2.0f - new Vector2(1.0f); // [-1.0, 1.0][-1.0, 1.0]
+                    Vector3 dir = GetWorldSpaceRay(projection.Inverted(), view.Inverted(), normalizedDeviceCoords);
 
-                Vector3 pointOfMass = mainWindow.PlayerCamera.Position + dir * 25.0f;
-                ShaderProgram.Upload(1, pointOfMass);
-                ShaderProgram.Upload(2, 1.0f);
+                    Vector3 pointOfMass = camPos + dir * 25.0f;
+                    ShaderProgram.Upload(1, pointOfMass);
+                    ShaderProgram.Upload(2, 1.0f);
+                }
+                else
+                    ShaderProgram.Upload(2, 0.0f);
             }
-            else
-                ShaderProgram.Upload(2, 0.0f);
+
+            ShaderProgram.Upload(4, view * projection);
         }
 
         public static Vector3 GetWorldSpaceRay(Matrix4 inverseProjection, Matrix4 inverseView, Vector2 normalizedDeviceCoords)

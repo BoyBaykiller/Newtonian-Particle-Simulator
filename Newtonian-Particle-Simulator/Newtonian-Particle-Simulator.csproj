@@ -35,10 +35,6 @@
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="src\shaders\" />
-  </ItemGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /e /y /i &quot;$(ProjectDir)src\shaders\&quot; &quot;$(ProjectDir)$(OutDir)\res\shaders&quot;" />
   </Target>

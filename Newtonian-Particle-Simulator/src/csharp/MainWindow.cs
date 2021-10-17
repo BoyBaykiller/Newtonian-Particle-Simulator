@@ -5,7 +5,6 @@ using OpenTK.Input;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
 using Newtonian_Particle_Simulator.Render;
-using Newtonian_Particle_Simulator.Render.Objects;
 
 namespace Newtonian_Particle_Simulator
 {
@@ -14,20 +13,13 @@ namespace Newtonian_Particle_Simulator
         public const int WORK_GROUP_SIZE_X = 128;
         public MainWindow() : base(832, 832, new GraphicsMode(0, 0, 0, 0), "Newtonian-Particle-Simulator") { }
 
-        public readonly Camera PlayerCamera = new Camera(new Vector3(0, 0, 15), new Vector3(0, 1, 0));
-        public Matrix4 Projection;
+        readonly Camera camera = new Camera(new Vector3(0, 0, 15), new Vector3(0, 1, 0));
+        Matrix4 projection;
 
         int frames = 0, FPS;
-        Query rasterizerTimer;
-        Query computeTimer;
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            rasterizerTimer.Start();
-            Framebuffer.Clear(0, ClearBufferMask.ColorBufferBit);
-            rasterizerProgram.Use();
-
-            GL.DrawArrays(PrimitiveType.Points, 0, particleSimulator.NumParticles);
-            rasterizerTimer.StopAndReset();
+            particleSimulator.Run((float)e.Time);
 
             SwapBuffers();
             frames++;
@@ -40,7 +32,7 @@ namespace Newtonian_Particle_Simulator
             if (fpsTimer.ElapsedMilliseconds >= 1000)
             {
                 FPS = frames;
-                Title = $"Newtonian-Particle-Simulator FPS: {FPS}; CP: {computeTimer.ElapsedMilliseconds}ms; RP: {rasterizerTimer.ElapsedMilliseconds}ms";
+                Title = $"Newtonian-Particle-Simulator FPS: {FPS}";
                 frames = 0;
                 fpsTimer.Restart();
             }
@@ -64,7 +56,7 @@ namespace Newtonian_Particle_Simulator
                     if (!CursorVisible)
                     {
                         MouseManager.Update();
-                        PlayerCamera.Velocity = Vector3.Zero;
+                        camera.Velocity = Vector3.Zero;
                     }
                 }
 
@@ -72,19 +64,9 @@ namespace Newtonian_Particle_Simulator
                     WindowState = WindowState == WindowState.Normal ? WindowState.Fullscreen : WindowState.Normal;
 
 
-                if (CursorVisible)
-                    particleSimulator.ProcessInputs(this);
-                else
-                    PlayerCamera.ProcessInputs((float)e.Time);
-
-                rasterizerProgram.Upload(0, PlayerCamera.View * Projection);
-
-                if (!isStopped)
-                {
-                    computeTimer.Start();
-                    particleSimulator.Run((float)e.Time);
-                    computeTimer.StopAndReset();
-                }
+                particleSimulator.ProcessInputs(this, camera.Position, camera.View, projection);
+                if (!CursorVisible)
+                    camera.ProcessInputs((float)e.Time);
             }
 
 
@@ -96,7 +78,6 @@ namespace Newtonian_Particle_Simulator
 
         readonly Stopwatch fpsTimer = Stopwatch.StartNew();
         ParticleSimulator particleSimulator;
-        ShaderProgram rasterizerProgram;
         protected override void OnLoad(EventArgs e)
         {
             Console.WriteLine($"OpenGL: {Helper.APIMajor}.{Helper.APIMinor}");
@@ -106,14 +87,12 @@ namespace Newtonian_Particle_Simulator
             if (!Helper.IsCoreExtensionAvailable("GL_ARB_direct_state_access", 4, 5))
                 throw new NotSupportedException("Your system does not support GL_ARB_direct_state_access");
 
-            GL.Enable(EnableCap.VertexProgramPointSize);
+            GL.PointSize(1.1f);
             GL.Enable(EnableCap.Blend);
             GL.BlendEquation(BlendEquationMode.FuncAdd);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-            computeTimer = new Query(100); rasterizerTimer = new Query(100);
             VSync = VSyncMode.Off;
-            rasterizerProgram = new ShaderProgram(new Shader(ShaderType.VertexShader, "res/shaders/rasterizer/vertex.glsl".GetPathContent()), new Shader(ShaderType.FragmentShader, "res/shaders/rasterizer/fragment.glsl".GetPathContent()));
 
             GL.GetInteger((GetIndexedPName)All.MaxComputeWorkGroupCount, 0, out int maxWorkGroupountX);
             ulong maxParticles = (ulong)maxWorkGroupountX * WORK_GROUP_SIZE_X;
@@ -137,7 +116,7 @@ namespace Newtonian_Particle_Simulator
         protected override void OnResize(EventArgs e)
         {
             GL.Viewport(0, 0, Width, Height);
-            Projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(103.0f), (float)Width / Height, 0.1f, 1000f);
+            projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(103.0f), (float)Width / Height, 0.1f, 1000f);
 
             base.OnResize(e);
         }
