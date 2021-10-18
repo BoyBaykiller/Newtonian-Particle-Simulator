@@ -10,7 +10,6 @@ namespace Newtonian_Particle_Simulator
 {
     class MainWindow : GameWindow
     {
-        public const int WORK_GROUP_SIZE_X = 128;
         public MainWindow() : base(832, 832, new GraphicsMode(0, 0, 0, 0), "Newtonian-Particle-Simulator") { }
 
         readonly Camera camera = new Camera(new Vector3(0, 0, 15), new Vector3(0, 1, 0));

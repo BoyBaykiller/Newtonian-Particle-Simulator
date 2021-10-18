@@ -17,7 +17,7 @@ namespace Newtonian_Particle_Simulator.Render
             ShaderProgram = new ShaderProgram(new Shader(ShaderType.VertexShader, "res/shaders/particles/vertex.glsl".GetPathContent()), new Shader(ShaderType.FragmentShader, "res/shaders/particles/fragment.glsl".GetPathContent()));
 
             ParticleBuffer = new BufferObject(BufferRangeTarget.ShaderStorageBuffer, 0);
-            ParticleBuffer.ImmutableAllocate(System.Runtime.CompilerServices.Unsafe.SizeOf<Particle>() * NumParticles, particles, BufferStorageFlags.ClientStorageBit);
+            ParticleBuffer.ImmutableAllocate(System.Runtime.CompilerServices.Unsafe.SizeOf<Particle>() * NumParticles, particles, BufferStorageFlags.DynamicStorageBit);
 
             IsRunning = true;
         }

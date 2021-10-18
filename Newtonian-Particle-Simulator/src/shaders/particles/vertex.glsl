@@ -24,11 +24,10 @@ void main()
     Particle particle = ssbo.particles[gl_VertexID];
 
     vec3 toMass = pointOfMass - particle.Position;
-    float len = length(toMass);
-    float dist = max(len, EPSILON);
+    float dist = max(length(toMass), EPSILON);
     
     particle.Velocity *= mix(1.0, 0.998, isRunning); 
-    particle.Velocity += isRunning * isActive / dist * (toMass / len);
+    particle.Velocity += isRunning * isActive / dist * (toMass / dist);
     particle.Position = particle.Position + dT * particle.Velocity * isRunning;
     ssbo.particles[gl_VertexID] = particle;
 
