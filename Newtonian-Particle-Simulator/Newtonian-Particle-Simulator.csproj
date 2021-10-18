@@ -28,9 +28,8 @@
     <EmbeddedResource Remove="res\**" />
     <None Remove="res\**" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <PackageReference Include="ImGui.NET" Version="1.78.0" />
     <PackageReference Include="OpenTK" Version="3.3.2" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
   </ItemGroup>

@@ -39,7 +39,7 @@ namespace Newtonian_Particle_Simulator.Render
         }
         public void Run(float dT)
         {
-            Framebuffer.Clear(0, ClearBufferMask.ColorBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit);
             ShaderProgram.Use();
             ShaderProgram.Upload(0, dT);
 
