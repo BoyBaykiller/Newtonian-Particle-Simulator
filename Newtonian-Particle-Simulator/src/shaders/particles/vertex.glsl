@@ -7,7 +7,7 @@ struct Particle
     vec3 Velocity;
 };
 
-layout(std430, binding = 0) coherent buffer ParticlesSSBO
+layout(std430, binding = 0) restrict buffer ParticlesSSBO
 {
     Particle[] particles;
 } ssbo;

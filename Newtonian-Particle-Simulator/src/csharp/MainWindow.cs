@@ -91,12 +91,10 @@ namespace Newtonian_Particle_Simulator
 
             VSync = VSyncMode.Off;
 
-            GL.GetInteger((GetIndexedPName)All.MaxComputeWorkGroupCount, 0, out int maxWorkGroupountX);
-            ulong maxParticles = (ulong)maxWorkGroupountX * WORK_GROUP_SIZE_X;
-            ulong numParticles;
+            int numParticles;
             do
-                Console.Write($"Number of particles (max: {maxParticles}): ");
-            while ((!ulong.TryParse(Console.ReadLine(), out numParticles)) || numParticles > maxParticles || numParticles < 0);
+                Console.Write($"Number of particles: "); // 8388480
+            while ((!int.TryParse(Console.ReadLine(), out numParticles)) || numParticles < 0);
 
             Random rng = new Random();
             Particle[] particles = new Particle[numParticles];
