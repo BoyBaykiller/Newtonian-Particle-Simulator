@@ -10,7 +10,7 @@ namespace Newtonian_Particle_Simulator
 {
     class MainWindow : GameWindow
     {
-        public MainWindow() : base(832, 832, new GraphicsMode(0, 0, 0, 0), "Newtonian-Particle-Simulator") { }
+        public MainWindow() : base(832, 832, new GraphicsMode(0, 0, 0, 0), "Newtonian-Particle-Simulator") { /*WindowState = WindowState.Fullscreen;*/ }
 
         readonly Camera camera = new Camera(new Vector3(0, 0, 15), new Vector3(0, 1, 0));
         Matrix4 projection;

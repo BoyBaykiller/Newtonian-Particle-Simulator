@@ -5,6 +5,8 @@
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Newtonian_Particle_Simulator</RootNamespace>
     <Platforms>AnyCPU;x64</Platforms>
+    <ApplicationIcon />
+    <StartupObject />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
