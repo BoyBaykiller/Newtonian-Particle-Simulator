@@ -13,10 +13,10 @@ namespace Newtonian_Particle_Simulator
         public MainWindow() 
             : base(832, 832, new GraphicsMode(0, 0, 0, 0), "Newtonian-Particle-Simulator") { /*WindowState = WindowState.Fullscreen;*/ }
 
-        readonly Camera camera = new Camera(new Vector3(0, 0, 15), new Vector3(0, 1, 0));
-        Matrix4 projection;
+        private readonly Camera camera = new Camera(new Vector3(0, 0, 15), new Vector3(0, 1, 0));
+        private Matrix4 projection;
 
-        int frames = 0, FPS;
+        private int frames = 0, FPS;
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
@@ -73,8 +73,8 @@ namespace Newtonian_Particle_Simulator
             base.OnUpdateFrame(e);
         }
 
-        readonly Stopwatch fpsTimer = Stopwatch.StartNew();
-        ParticleSimulator particleSimulator;
+        private readonly Stopwatch fpsTimer = Stopwatch.StartNew();
+        private ParticleSimulator particleSimulator;
         protected override void OnLoad(EventArgs e)
         {
             Console.WriteLine($"OpenGL: {Helper.APIMajor}.{Helper.APIMinor}");
