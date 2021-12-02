@@ -1,8 +1,12 @@
 #version 430 core
 layout(location = 0) out vec4 FragColor;
 
-in vec4 Color;
+layout(location = 0) in struct
+{
+    vec4 Color;
+} inData;
+
 void main()
 {
-    FragColor = vec4(Color);
+    FragColor = vec4(inData.Color);
 }

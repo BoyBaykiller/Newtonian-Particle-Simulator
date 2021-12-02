@@ -19,7 +19,11 @@ layout(location = 2) uniform float isActive;
 layout(location = 3) uniform float isRunning;
 layout(location = 4) uniform mat4 projViewMatrix;
 
-out vec4 Color;
+layout(location = 0) out struct
+{
+    vec4 Color;
+} outData;
+
 void main()
 {
     Particle particle = ssbo.particles[gl_VertexID];
@@ -38,6 +42,6 @@ void main()
     float green = clamp(0.08 * max(particle.Velocity.x, max(particle.Velocity.y, particle.Velocity.z)), 0.2, 0.5);
     float blue = 0.7 - red;
 
-    Color = vec4(red, green, blue, 0.25);
+    outData.Color = vec4(red, green, blue, 0.25);
     gl_Position = projViewMatrix * vec4(particle.Position, 1.0);
 }
