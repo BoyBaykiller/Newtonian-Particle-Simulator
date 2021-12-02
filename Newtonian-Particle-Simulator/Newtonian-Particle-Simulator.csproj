@@ -26,18 +26,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="res\**" />
-    <EmbeddedResource Remove="res\**" />
-    <None Remove="res\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="OpenTK" Version="3.3.2" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /e /y /i &quot;$(ProjectDir)src\shaders\&quot; &quot;$(ProjectDir)$(OutDir)\res\shaders&quot;" />
+    <Exec Command="xcopy /e /y /i &quot;$(ProjectDir)res&quot; &quot;$(ProjectDir)$(OutDir)\res&quot;" />
   </Target>
 
 </Project>

@@ -10,7 +10,8 @@ namespace Newtonian_Particle_Simulator
 {
     class MainWindow : GameWindow
     {
-        public MainWindow() : base(832, 832, new GraphicsMode(0, 0, 0, 0), "Newtonian-Particle-Simulator") { /*WindowState = WindowState.Fullscreen;*/ }
+        public MainWindow() 
+            : base(832, 832, new GraphicsMode(0, 0, 0, 0), "Newtonian-Particle-Simulator") { /*WindowState = WindowState.Fullscreen;*/ }
 
         readonly Camera camera = new Camera(new Vector3(0, 0, 15), new Vector3(0, 1, 0));
         Matrix4 projection;
@@ -109,8 +110,11 @@ namespace Newtonian_Particle_Simulator
 
         protected override void OnResize(EventArgs e)
         {
-            GL.Viewport(0, 0, Width, Height);
-            projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(103.0f), (float)Width / Height, 0.1f, 1000f);
+            if (Width != 0 && Height != 0)
+            {
+                GL.Viewport(0, 0, Width, Height);
+                projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(103.0f), (float)Width / Height, 0.1f, 1000f);
+            }
 
             base.OnResize(e);
         }

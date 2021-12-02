@@ -46,14 +46,14 @@ namespace Newtonian_Particle_Simulator.Render
             GL.DrawArrays(PrimitiveType.Points, 0, NumParticles);
         }
 
-        public void ProcessInputs(MainWindow mainWindow, Vector3 camPos, in Matrix4 view, in Matrix4 projection)
+        public void ProcessInputs(GameWindow gameWindow, in Vector3 camPos, in Matrix4 view, in Matrix4 projection)
         {
-            if (mainWindow.CursorVisible)
+            if (gameWindow.CursorVisible)
             {
                 if (MouseManager.LeftButton == ButtonState.Pressed)
                 {
-                    System.Drawing.Point windowSpaceCoords = mainWindow.PointToClient(new System.Drawing.Point(MouseManager.WindowPositionX, MouseManager.WindowPositionY)); windowSpaceCoords.Y = mainWindow.Height - windowSpaceCoords.Y; // [0, Width][0, Height]
-                    Vector2 normalizedDeviceCoords = Vector2.Divide(new Vector2(windowSpaceCoords.X, windowSpaceCoords.Y), new Vector2(mainWindow.Width, mainWindow.Height)) * 2.0f - new Vector2(1.0f); // [-1.0, 1.0][-1.0, 1.0]
+                    System.Drawing.Point windowSpaceCoords = gameWindow.PointToClient(new System.Drawing.Point(MouseManager.WindowPositionX, MouseManager.WindowPositionY)); windowSpaceCoords.Y = gameWindow.Height - windowSpaceCoords.Y; // [0, Width][0, Height]
+                    Vector2 normalizedDeviceCoords = Vector2.Divide(new Vector2(windowSpaceCoords.X, windowSpaceCoords.Y), new Vector2(gameWindow.Width, gameWindow.Height)) * 2.0f - new Vector2(1.0f); // [-1.0, 1.0][-1.0, 1.0]
                     Vector3 dir = GetWorldSpaceRay(projection.Inverted(), view.Inverted(), normalizedDeviceCoords);
 
                     Vector3 pointOfMass = camPos + dir * 25.0f;

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
-using System.Text;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 
@@ -18,40 +16,12 @@ namespace Newtonian_Particle_Simulator.Render.Objects
             
             ID = GL.CreateShader(shaderType);
 
-            sourceCode = PreProcessIncludes(sourceCode);
             GL.ShaderSource(ID, sourceCode);
             GL.CompileShader(ID);
 
             string compileInfo = GL.GetShaderInfoLog(ID);
             if (compileInfo != string.Empty)
                 Console.WriteLine(compileInfo);
-        }
-
-        /// <summary>
-        /// Searches the string for #include and includes the specified Path. Example: #include PathTracing/fragCompute
-        /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
-        private static string PreProcessIncludes(string s)
-        {
-            StringBuilder includedContent = new StringBuilder(s.Length + 2000);
-            using StringReader stringReader = new StringReader(s);
-
-            string line;
-            while ((line = stringReader.ReadLine()) is not null) // dont use != because it could be overriden
-            {
-                string trimmed = line.Trim();
-                if (trimmed.Length > 9 && trimmed.Substring(0, 9) == "#include ")
-                {
-                    string filePath = $"{Helper.SHADER_DIRECTORY_PATH}{trimmed.Substring(9, trimmed.Length - 9)}.glsl";
-                    includedContent.Append(PreProcessIncludes(File.ReadAllText(filePath)));
-                }
-                else
-                {
-                    includedContent.AppendLine(line);
-                }
-            }
-            return includedContent.ToString();
         }
 
         public void Dispose()

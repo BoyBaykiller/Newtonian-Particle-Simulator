@@ -8,7 +8,6 @@ namespace Newtonian_Particle_Simulator
 {
     static class Helper
     {
-        public const string SHADER_DIRECTORY_PATH = "res/Shaders/";
         public static readonly int APIMajor = (int)char.GetNumericValue(GL.GetString(StringName.Version)[0]);
         public static readonly int APIMinor = (int)char.GetNumericValue(GL.GetString(StringName.Version)[2]);
 

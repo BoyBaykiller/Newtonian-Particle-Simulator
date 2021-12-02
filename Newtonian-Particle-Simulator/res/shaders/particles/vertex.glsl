@@ -1,6 +1,6 @@
 #version 430 core
 #define EPSILON 0.001
-const float DRAG_COEF = log(0.998) * 176.0; 
+const float DRAG_COEF = log(0.998) * 176.0; // log(0.70303228048)
 
 struct Particle
 {
@@ -10,7 +10,7 @@ struct Particle
 
 layout(std430, binding = 0) restrict buffer ParticlesSSBO
 {
-    Particle[] particles;
+    Particle particles[];
 } ssbo;
 
 layout(location = 0) uniform float dT;
@@ -29,8 +29,8 @@ void main()
     
     vec3 acceleration = 176.0 * isRunning * isActive / dist * (toMass / dist);
     particle.Velocity *= mix(1.0, exp(DRAG_COEF * dT), isRunning); // https://stackoverflow.com/questions/61812575/which-formula-to-use-for-drag-simulation-each-frame
-    particle.Position += (dT * particle.Velocity + 0.5 * acceleration * dT * dT) * isRunning;
     particle.Velocity += acceleration * dT;
+    particle.Position += (dT * particle.Velocity + 0.5 * acceleration * dT * dT) * isRunning;
     ssbo.particles[gl_VertexID] = particle;
 
 
