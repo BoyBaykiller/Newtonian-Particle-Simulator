@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Newtonian-Particle-Simulator": {
+      "commandName": "Project",
+      "workingDirectory": "$(ProjectDir)"
+    }
+  }
+}
