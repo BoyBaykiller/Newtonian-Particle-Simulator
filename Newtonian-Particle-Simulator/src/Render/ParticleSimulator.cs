@@ -44,6 +44,7 @@ namespace Newtonian_Particle_Simulator.Render
             ShaderProgram.Upload(0, dT);
 
             GL.DrawArrays(PrimitiveType.Points, 0, NumParticles);
+            GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
         }
 
         public void ProcessInputs(GameWindow gameWindow, in Vector3 camPos, in Matrix4 view, in Matrix4 projection)

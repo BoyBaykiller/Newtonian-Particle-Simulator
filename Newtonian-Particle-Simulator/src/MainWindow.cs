@@ -19,7 +19,6 @@ namespace Newtonian_Particle_Simulator
         private int frames = 0, FPS;
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
             particleSimulator.Run((float)e.Time);
 
             SwapBuffers();
@@ -65,7 +64,6 @@ namespace Newtonian_Particle_Simulator
                 if (!CursorVisible)
                     camera.ProcessInputs((float)e.Time);
             }
-
 
             if (KeyboardManager.IsKeyDown(Key.Escape))
                 Close();
