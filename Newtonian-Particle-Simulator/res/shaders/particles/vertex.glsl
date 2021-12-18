@@ -29,9 +29,9 @@ void main()
     Particle particle = ssbo.particles[gl_VertexID];
 
     vec3 toMass = pointOfMass - particle.Position;
-    float dist = max(length(toMass), EPSILON);
+    float distSqured = max(dot(toMass, toMass), EPSILON * EPSILON);
     
-    vec3 acceleration = 176.0 * isRunning * isActive / dist * (toMass / dist);
+    vec3 acceleration = (176.0 * toMass * isRunning * isActive) / distSqured;
     particle.Velocity *= mix(1.0, exp(DRAG_COEF * dT), isRunning); // https://stackoverflow.com/questions/61812575/which-formula-to-use-for-drag-simulation-each-frame
     particle.Position += (dT * particle.Velocity + 0.5 * acceleration * dT * dT) * isRunning;
     particle.Velocity += acceleration * dT;

@@ -1,8 +1,5 @@
 # C# OpenGL Newtonian-Particle-Simulator
 
-This is not actually Newtonian physics. The force between particles doesn't behave according to the
-Inverse-square law, but yeah it looks better in this case. Idk why I named it like that.
-
 ![gif](Video.gif?raw=true)
 ![img1](sample.png?raw=true)
 
