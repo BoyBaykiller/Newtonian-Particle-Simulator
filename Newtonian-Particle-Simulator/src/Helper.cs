@@ -8,8 +8,8 @@ namespace Newtonian_Particle_Simulator
 {
     static class Helper
     {
-        public static readonly int APIMajor = (int)char.GetNumericValue(GL.GetString(StringName.Version)[0]);
-        public static readonly int APIMinor = (int)char.GetNumericValue(GL.GetString(StringName.Version)[2]);
+        public static readonly double APIVersion = Convert.ToDouble(GL.GetString(StringName.Version).Substring(0, 3));
+        public static readonly double GLSLVersion = Convert.ToDouble(GL.GetString(StringName.ShadingLanguageVersion));
 
         public static string GetPathContent(this string path)
         {
@@ -30,17 +30,18 @@ namespace Newtonian_Particle_Simulator
             return new Vector3(x, y, z);
         }
 
-        private static IEnumerable<string> GetExtensions()
+        private static HashSet<string> GetExtensions()
         {
+            HashSet<string> extensions = new HashSet<string>(GL.GetInteger(GetPName.NumExtensions));
             for (int i = 0; i < GL.GetInteger(GetPName.NumExtensions); i++)
-                yield return GL.GetString(StringNameIndexed.Extensions, i);
+                extensions.Add(GL.GetString(StringNameIndexed.Extensions, i));
+            
+            return extensions;
         }
 
         private static readonly HashSet<string> glExtensions = new HashSet<string>(GetExtensions());
 
-
         /// <summary>
-        /// Extensions are not part of any GL specification. Some of them are widely implemented on any hardware, others are supported only on specific vendors like NVIDIA and newer hardware.
         /// </summary>
         /// <param name="extension">The extension to check against. Examples: GL_ARB_bindless_texture or WGL_EXT_swap_control</param>
         /// <returns>True if the extension is available</returns>
@@ -50,22 +51,14 @@ namespace Newtonian_Particle_Simulator
         }
 
         /// <summary>
-        /// Core Extensions are those which are core in a specific version and are very likely to be supported in following releases as well. There functionality may also be available in lower GL versions.
-        /// See all core extensions <see href="https://www.khronos.org/opengl/wiki/History_of_OpenGL#Summary_of_version_changes">here</see>
         /// </summary>
         /// <param name="extension">The extension to check against. Examples: GL_ARB_direct_state_access or GL_ARB_compute_shader</param>
-        /// <param name="firstMajor">The major API version the extension became part of the core profile</param>
-        /// <param name="firstMinor">The minor API version the extension became part of the core profile</param>
-        /// <param name="lastMajor">The last major API version the extension was part of the core profile</param>
-        /// <param name="lastMinor">The last minor API version the extension was part of the core profile</param>
+        /// <param name="first">The major API version the extension became part of the core profile</param>
+        /// <param name="last">The minor API version the extension became part of the core profile</param>
         /// <returns>True if this OpenGL version is in the specified range or the extension is otherwise available</returns>
-        public static bool IsCoreExtensionAvailable(string extension, int firstMajor, int firstMinor, int lastMajor = 4, int lastMinor = 6)
+        public static bool IsCoreExtensionAvailable(string extension, double first, double last)
         {
-            int firstVersion = Convert.ToInt32($"{firstMajor}{firstMinor}");
-            int lastVersion = Convert.ToInt32($"{lastMajor}{lastMinor}");
-            int thisVersion = Convert.ToInt32($"{APIMajor}{APIMinor}");
-
-            return (thisVersion >= firstVersion && thisVersion <= lastVersion) || IsExtensionsAvailable(extension);
+            return (APIVersion >= first && APIVersion <= last) || IsExtensionsAvailable(extension);
         }
     }
 }

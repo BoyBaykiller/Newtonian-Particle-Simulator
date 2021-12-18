@@ -75,8 +75,8 @@ namespace Newtonian_Particle_Simulator
         private ParticleSimulator particleSimulator;
         protected override void OnLoad(EventArgs e)
         {
-            Console.WriteLine($"OpenGL: {Helper.APIMajor}.{Helper.APIMinor}");
-            Console.WriteLine($"GLSL: {GL.GetString(StringName.ShadingLanguageVersion)}");
+            Console.WriteLine($"OpenGL: {Helper.APIVersion}");
+            Console.WriteLine($"GLSL: {Helper.GLSLVersion}");
             Console.WriteLine($"GPU: {GL.GetString(StringName.Renderer)}");
 
             if (!Helper.IsCoreExtensionAvailable("GL_ARB_direct_state_access", 4, 5))
