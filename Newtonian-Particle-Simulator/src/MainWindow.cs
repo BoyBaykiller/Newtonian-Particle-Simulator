@@ -75,12 +75,21 @@ namespace Newtonian_Particle_Simulator
         private ParticleSimulator particleSimulator;
         protected override void OnLoad(EventArgs e)
         {
-            Console.WriteLine($"OpenGL: {Helper.APIVersion}");
-            Console.WriteLine($"GLSL: {Helper.GLSLVersion}");
+            Console.WriteLine($"OpenGL: {GL.GetString(StringName.Version)}");
+            Console.WriteLine($"GLSL: {GL.GetString(StringName.ShadingLanguageVersion)}");
             Console.WriteLine($"GPU: {GL.GetString(StringName.Renderer)}");
 
-            if (!Helper.IsCoreExtensionAvailable("GL_ARB_direct_state_access", 4, 5))
-                throw new NotSupportedException("Your system does not support GL_ARB_direct_state_access");
+            if (!Helper.IsExtensionsAvailable("GL_ARB_direct_state_access"))
+            {
+                Console.WriteLine("Warning you system does not support GL_ARB_direct_state_access!");
+                Console.ReadLine();
+            }
+
+            if (!Helper.IsExtensionsAvailable("GL_ARB_buffer_storage"))
+            {
+                Console.WriteLine("Warning you system does not support GL_ARB_buffer_storage!");
+                Console.ReadLine();
+            }
 
             GL.PointSize(1.1f);
             GL.Enable(EnableCap.Blend);
