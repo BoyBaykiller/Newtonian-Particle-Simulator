@@ -80,11 +80,11 @@ namespace Newtonian_Particle_Simulator
             Console.WriteLine($"GPU: {GL.GetString(StringName.Renderer)}");
 
             if (!Helper.IsCoreExtensionAvailable("GL_ARB_direct_state_access", 4.5))
-                throw new NotSupportedException("Your system does not GL_ARB_direct_state_access");
+                throw new NotSupportedException("Your system does not support GL_ARB_direct_state_access");
 
-            if (!Helper.IsCoreExtensionAvailable("GL_ARB_buffer_storage", 4.3))
-                throw new NotSupportedException("Your system does not GL_ARB_buffer_storage");
-
+            if (!Helper.IsCoreExtensionAvailable("GL_ARB_buffer_storage", 4.4))
+                throw new NotSupportedException("Your system does not support GL_ARB_buffer_storage");
+            
             GL.PointSize(1.1f);
             GL.Enable(EnableCap.Blend);
             GL.BlendEquation(BlendEquationMode.FuncAdd);
