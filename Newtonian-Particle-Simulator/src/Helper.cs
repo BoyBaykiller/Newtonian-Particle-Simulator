@@ -8,6 +8,8 @@ namespace Newtonian_Particle_Simulator
 {
     static class Helper
     {
+        // API version as a decimal. For example major 4 and minor 6 => 4.6
+        public static readonly double APIVersion = Convert.ToDouble($"{GL.GetInteger(GetPName.MajorVersion)}{GL.GetInteger(GetPName.MinorVersion)}") / 10.0;
         public static string GetPathContent(this string path)
         {
             if (!File.Exists(path))
@@ -45,6 +47,17 @@ namespace Newtonian_Particle_Simulator
         public static bool IsExtensionsAvailable(string extension)
         {
             return glExtensions.Contains(extension);
+        }
+
+
+        /// <summary>
+        /// </summary>
+        /// <param name="extension">The extension to check against. Examples: GL_ARB_direct_state_access or GL_ARB_compute_shader</param>
+        /// <param name="first">The major API version the extension became part of the core profile</param>
+        /// <returns>True if this OpenGL version is in the specified range or the extension is otherwise available</returns>
+        public static bool IsCoreExtensionAvailable(string extension, double first)
+        {
+            return (APIVersion >= first) || IsExtensionsAvailable(extension);
         }
     }
 }
