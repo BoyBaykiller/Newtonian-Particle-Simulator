@@ -3,6 +3,13 @@
 ![gif](Video.gif?raw=true)
 ![img1](sample.png?raw=true)
 
+This is a very simplistic particle engine.
+The whole pipeline consists out of a [single shader program](Newtonian-Particle-Simulator/res/shaders/particles).
+The vertex shader computes and renders particles at the same time. The fragment shader just outputs the computed colors with blending enabled.
+The actual particles are stored in a Shader Storage Buffer which is a really useful arbitrary read/write interface of global GPU memory.
+
+Requires OpenGL 4.5.
+
 Also see https://youtu.be/NhnoNYqIhTI.
 
 ### **KeyBoard:**
