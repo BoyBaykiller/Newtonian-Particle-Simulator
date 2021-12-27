@@ -5,7 +5,7 @@
         static void Main()
         {
             MainWindow gameWindow = new MainWindow();
-            gameWindow.Run(System.Math.Min(OpenTK.DisplayDevice.Default.RefreshRate, 144));
+            gameWindow.Run(OpenTK.DisplayDevice.Default.RefreshRate);
         }
     }
 }
