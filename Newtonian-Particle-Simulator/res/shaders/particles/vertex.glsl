@@ -10,8 +10,8 @@ struct Particle
 
 layout(std430, binding = 0) restrict buffer ParticlesSSBO
 {
-    Particle particles[];
-} ssbo;
+    Particle Particles[];
+} particleSSBO;
 
 layout(location = 0) uniform float dT;
 layout(location = 1) uniform vec3 pointOfMass;
@@ -26,17 +26,23 @@ out InOutVars
 
 void main()
 {
-    Particle particle = ssbo.particles[gl_VertexID];
+    Particle particle = particleSSBO.Particles[gl_VertexID];
 
     const vec3 toMass = pointOfMass - particle.Position;
-    const float distSqured = max(dot(toMass, toMass), EPSILON * EPSILON);
     
-    const vec3 acceleration = (176.0 * toMass * isRunning * isActive) / distSqured;
-    particle.Velocity *= mix(1.0, exp(DRAG_COEF * dT), isRunning); // https://stackoverflow.com/questions/61812575/which-formula-to-use-for-drag-simulation-each-frame
-    particle.Position += (dT * particle.Velocity + 0.5 * acceleration * dT * dT) * isRunning;
-    particle.Velocity += acceleration * dT;
-    ssbo.particles[gl_VertexID] = particle;
+    /// Implementation of Newton's law of gravity
+    const float G = 1.0; // gravitational constant 
+    const float m1_m2 = 176.0; // mass of both objects multiplied
+    const float rSquared = max(dot(toMass, toMass), EPSILON * EPSILON); // distance between objects squared
+    const float force = G * ((m1_m2) / rSquared);
+    
+    // acceleration = toMass * force. Technically toMass would have to be normalized but feels better without
+    const vec3 acceleration = toMass * force * isRunning * isActive;
 
+    particle.Velocity *= mix(1.0, exp(DRAG_COEF * dT), isRunning); // https://stackoverflow.com/questions/61812575/which-formula-to-use-for-drag-simulation-each-frame
+    particle.Position += (dT * particle.Velocity + 0.5 * acceleration * dT * dT) * isRunning; // Euler integration
+    particle.Velocity += acceleration * dT;
+    particleSSBO.Particles[gl_VertexID] = particle;
 
     const float red = 0.0045 * dot(particle.Velocity, particle.Velocity);
     const float green = clamp(0.08 * max(particle.Velocity.x, max(particle.Velocity.y, particle.Velocity.z)), 0.2, 0.5);
