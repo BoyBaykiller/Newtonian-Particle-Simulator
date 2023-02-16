@@ -31,13 +31,16 @@ void main()
     const vec3 toMass = pointOfMass - particle.Position;
     
     /// Implementation of Newton's law of gravity
-    const float G = 1.0; // gravitational constant 
-    const float m1_m2 = 176.0; // mass of both objects multiplied
+    const float m1 = 1.0;   // constant particle mass
+    const float m2 = 176.0; // (user controlled) pointOfMass mass
+    const float G  = 1.0;   // gravitational constant 
+    const float m1_m2 = m1 * m2; // mass of both objects multiplied
     const float rSquared = max(dot(toMass, toMass), EPSILON * EPSILON); // distance between objects squared
-    const float force = G * ((m1_m2) / rSquared);
+    // Technically toMass would have to be normalized but feels better without
+    const vec3 force = toMass * (G * ((m1_m2) / rSquared));
     
-    // acceleration = toMass * force. Technically toMass would have to be normalized but feels better without
-    const vec3 acceleration = toMass * force * isRunning * isActive;
+    // acceleration = force / m. 
+    const vec3 acceleration = (force * isRunning * isActive) / m1;
 
     particle.Velocity *= mix(1.0, exp(DRAG_COEF * dT), isRunning); // https://stackoverflow.com/questions/61812575/which-formula-to-use-for-drag-simulation-each-frame
     particle.Position += (dT * particle.Velocity + 0.5 * acceleration * dT * dT) * isRunning; // Euler integration

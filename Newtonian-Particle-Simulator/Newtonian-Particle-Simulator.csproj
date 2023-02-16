@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>Newtonian_Particle_Simulator</RootNamespace>
     <Platforms>AnyCPU;x64</Platforms>
     <ApplicationIcon />
