@@ -8,16 +8,16 @@ namespace Newtonian_Particle_Simulator.Render
     class ParticleSimulator
     {
         public readonly int NumParticles;
-        public readonly BufferObject ParticleBuffer;
-        public readonly ShaderProgram ShaderProgram;
-        public ParticleSimulator(Particle[] particles)
+        private readonly BufferObject particleBuffer;
+        private readonly ShaderProgram shaderProgram;
+        public unsafe ParticleSimulator(Particle[] particles)
         {
             NumParticles = particles.Length;
 
-            ShaderProgram = new ShaderProgram(new Shader(ShaderType.VertexShader, "res/shaders/particles/vertex.glsl".GetPathContent()), new Shader(ShaderType.FragmentShader, "res/shaders/particles/fragment.glsl".GetPathContent()));
+            shaderProgram = new ShaderProgram(new Shader(ShaderType.VertexShader, "res/shaders/particles/vertex.glsl".GetPathContent()), new Shader(ShaderType.FragmentShader, "res/shaders/particles/fragment.glsl".GetPathContent()));
 
-            ParticleBuffer = new BufferObject(BufferRangeTarget.ShaderStorageBuffer, 0);
-            ParticleBuffer.ImmutableAllocate(System.Runtime.CompilerServices.Unsafe.SizeOf<Particle>() * NumParticles, particles, BufferStorageFlags.DynamicStorageBit);
+            particleBuffer = new BufferObject(BufferRangeTarget.ShaderStorageBuffer, 0);
+            particleBuffer.ImmutableAllocate(sizeof(Particle) * (nint)NumParticles, particles, BufferStorageFlags.DynamicStorageBit);
 
             IsRunning = true;
         }
@@ -34,14 +34,14 @@ namespace Newtonian_Particle_Simulator.Render
             set
             {
                 _isRunning = value;
-                ShaderProgram.Upload(3, _isRunning ? 1.0f : 0.0f);
+                shaderProgram.Upload(3, _isRunning ? 1.0f : 0.0f);
             }
         }
         public void Run(float dT)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
-            ShaderProgram.Use();
-            ShaderProgram.Upload(0, dT);
+            shaderProgram.Use();
+            shaderProgram.Upload(0, dT);
 
             GL.DrawArrays(PrimitiveType.Points, 0, NumParticles);
             GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
@@ -58,17 +58,17 @@ namespace Newtonian_Particle_Simulator.Render
                     Vector3 dir = GetWorldSpaceRay(projection.Inverted(), view.Inverted(), normalizedDeviceCoords);
 
                     Vector3 pointOfMass = camPos + dir * 25.0f;
-                    ShaderProgram.Upload(1, pointOfMass);
-                    ShaderProgram.Upload(2, 1.0f);
+                    shaderProgram.Upload(1, pointOfMass);
+                    shaderProgram.Upload(2, 1.0f);
                 }
                 else
-                    ShaderProgram.Upload(2, 0.0f);
+                    shaderProgram.Upload(2, 0.0f);
             }
 
             if (KeyboardManager.IsKeyTouched(Key.T))
                 IsRunning = !IsRunning;
 
-            ShaderProgram.Upload(4, view * projection);
+            shaderProgram.Upload(4, view * projection);
         }
 
         public static Vector3 GetWorldSpaceRay(Matrix4 inverseProjection, Matrix4 inverseView, Vector2 normalizedDeviceCoords)

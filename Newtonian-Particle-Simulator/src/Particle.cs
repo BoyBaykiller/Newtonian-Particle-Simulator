@@ -5,8 +5,8 @@ namespace Newtonian_Particle_Simulator
     struct Particle
     {
         public Vector3 Position;
-        int pad;
+        private readonly int _pad0;
         public Vector3 Velocity;
-        int pad1;
+        private readonly int _pad1;
     }
 }

@@ -5,7 +5,9 @@ const float DRAG_COEF = log(0.998) * 176.0; // log(0.70303228048)
 struct Particle
 {
     vec3 Position;
+    float _pad0;
     vec3 Velocity;
+    float _pad1;
 };
 
 layout(std430, binding = 0) restrict buffer ParticlesSSBO

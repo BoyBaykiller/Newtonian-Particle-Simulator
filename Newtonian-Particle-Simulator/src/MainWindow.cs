@@ -101,7 +101,7 @@ namespace Newtonian_Particle_Simulator
             Particle[] particles = new Particle[numParticles];
             for (int i = 0; i < particles.Length; i++)
             {
-                particles[i].Position = new Vector3((float)rng.NextDouble() * 100 - 50, (float)rng.NextDouble() * 100 - 50, -(float)rng.NextDouble() * 100);
+                particles[i].Position = new Vector3(rng.NextSingle() * 100 - 50, rng.NextSingle() * 100 - 50, -rng.NextSingle() * 100);
                 //particles[i].Position = Helper.RandomUnitVector(rng) * 50.0f;
             }
             particleSimulator = new ParticleSimulator(particles);
