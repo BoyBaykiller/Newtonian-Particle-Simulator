@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
@@ -10,13 +9,6 @@ namespace Newtonian_Particle_Simulator
     {
         // API version as a decimal. For example major 4 and minor 6 => 4.6
         public static readonly double APIVersion = Convert.ToDouble($"{GL.GetInteger(GetPName.MajorVersion)}{GL.GetInteger(GetPName.MinorVersion)}") / 10.0;
-        public static string GetPathContent(this string path)
-        {
-            if (!File.Exists(path))
-                throw new FileNotFoundException($"{path} does not exist");
-
-            return File.ReadAllText(path);
-        }
 
         public static Vector3 RandomUnitVector(Random rng)
         {
@@ -29,16 +21,17 @@ namespace Newtonian_Particle_Simulator
             return new Vector3(x, y, z);
         }
 
+        private static readonly HashSet<string> glExtensions = new HashSet<string>(GetExtensions());
         private static HashSet<string> GetExtensions()
         {
             HashSet<string> extensions = new HashSet<string>(GL.GetInteger(GetPName.NumExtensions));
             for (int i = 0; i < GL.GetInteger(GetPName.NumExtensions); i++)
+            {
                 extensions.Add(GL.GetString(StringNameIndexed.Extensions, i));
+            }
             
             return extensions;
         }
-
-        private static readonly HashSet<string> glExtensions = new HashSet<string>(GetExtensions());
 
         public static bool IsExtensionsAvailable(string extension)
         {

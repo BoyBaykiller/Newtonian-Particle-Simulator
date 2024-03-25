@@ -106,6 +106,8 @@ namespace Newtonian_Particle_Simulator
             }
             particleSimulator = new ParticleSimulator(particles);
 
+            GC.Collect();
+
             base.OnLoad(e);
         }
 

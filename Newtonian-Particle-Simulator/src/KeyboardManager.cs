@@ -1,5 +1,4 @@
-﻿using OpenTK;
-using OpenTK.Input;
+﻿using OpenTK.Input;
 
 namespace Newtonian_Particle_Simulator
 {

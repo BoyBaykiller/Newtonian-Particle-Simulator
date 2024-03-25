@@ -1,7 +1,9 @@
-﻿using Newtonian_Particle_Simulator.Render.Objects;
+﻿using System;
+using System.IO;
 using OpenTK;
 using OpenTK.Input;
 using OpenTK.Graphics.OpenGL4;
+using Newtonian_Particle_Simulator.Render.Objects;
 
 namespace Newtonian_Particle_Simulator.Render
 {
@@ -10,14 +12,16 @@ namespace Newtonian_Particle_Simulator.Render
         public readonly int NumParticles;
         private readonly BufferObject particleBuffer;
         private readonly ShaderProgram shaderProgram;
-        public unsafe ParticleSimulator(Particle[] particles)
+        public unsafe ParticleSimulator(ReadOnlySpan<Particle> particles)
         {
             NumParticles = particles.Length;
 
-            shaderProgram = new ShaderProgram(new Shader(ShaderType.VertexShader, "res/shaders/particles/vertex.glsl".GetPathContent()), new Shader(ShaderType.FragmentShader, "res/shaders/particles/fragment.glsl".GetPathContent()));
+            shaderProgram = new ShaderProgram(
+                new Shader(ShaderType.VertexShader, File.ReadAllText("res/shaders/particles/vertex.glsl")),
+                new Shader(ShaderType.FragmentShader, File.ReadAllText("res/shaders/particles/fragment.glsl")));
 
             particleBuffer = new BufferObject(BufferRangeTarget.ShaderStorageBuffer, 0);
-            particleBuffer.ImmutableAllocate(sizeof(Particle) * (nint)NumParticles, particles, BufferStorageFlags.DynamicStorageBit);
+            particleBuffer.ImmutableAllocate(sizeof(Particle) * (nint)NumParticles, particles[0], BufferStorageFlags.None);
 
             IsRunning = true;
         }
