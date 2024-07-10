@@ -10,22 +10,26 @@ namespace Newtonian_Particle_Simulator.Render
     class ParticleSimulator
     {
         public readonly int NumParticles;
-        private readonly BufferObject particleBuffer;
         private readonly ShaderProgram shaderProgram;
+
         public unsafe ParticleSimulator(ReadOnlySpan<Particle> particles)
         {
             NumParticles = particles.Length;
 
-            shaderProgram = new ShaderProgram(
-                new Shader(ShaderType.VertexShader, File.ReadAllText("res/shaders/particles/vertex.glsl")),
-                new Shader(ShaderType.FragmentShader, File.ReadAllText("res/shaders/particles/fragment.glsl")));
+            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+            string vertexShaderPath = Path.Combine(basePath, "res", "shaders", "particles", "vertex.glsl");
+            string fragmentShaderPath = Path.Combine(basePath, "res", "shaders", "particles", "fragment.glsl");
 
-            particleBuffer = new BufferObject(BufferRangeTarget.ShaderStorageBuffer, 0);
+            shaderProgram = new ShaderProgram(
+                new Shader(ShaderType.VertexShader, File.ReadAllText(vertexShaderPath)),
+                new Shader(ShaderType.FragmentShader, File.ReadAllText(fragmentShaderPath))
+            );
+
+            var particleBuffer = new BufferObject(BufferRangeTarget.ShaderStorageBuffer, 0);
             particleBuffer.ImmutableAllocate(sizeof(Particle) * (nint)NumParticles, particles[0], BufferStorageFlags.None);
 
             IsRunning = true;
         }
-
 
         private bool _isRunning;
         public bool IsRunning
@@ -41,6 +45,7 @@ namespace Newtonian_Particle_Simulator.Render
                 shaderProgram.Upload(3, _isRunning ? 1.0f : 0.0f);
             }
         }
+
         public void Run(float dT)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
