@@ -43,6 +43,11 @@ namespace Newtonian_Particle_Simulator.Render
         }
         public void Run(float dT)
         {
+            GL.PointSize(1.1f);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendEquation(BlendEquationMode.FuncAdd);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+
             GL.Clear(ClearBufferMask.ColorBufferBit);
             shaderProgram.Use();
             shaderProgram.Upload(0, dT);

@@ -84,11 +84,6 @@ namespace Newtonian_Particle_Simulator
 
             if (!Helper.IsCoreExtensionAvailable("GL_ARB_buffer_storage", 4.4))
                 throw new NotSupportedException("Your system does not support GL_ARB_buffer_storage");
-            
-            GL.PointSize(1.1f);
-            GL.Enable(EnableCap.Blend);
-            GL.BlendEquation(BlendEquationMode.FuncAdd);
-            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             VSync = VSyncMode.Off;
 
